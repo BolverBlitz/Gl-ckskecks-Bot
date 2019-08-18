@@ -6,6 +6,8 @@ var changelog = require('./changelog');
 var f = require('./Funktions');
 //getDateTime() Returns german date & time Format
 //log() Logs with Time and Date
+//getRandomInt(max)
+//uptime(Time_started)
 
 //Include simple modules
 var fs = require("fs");
@@ -102,7 +104,7 @@ bot.on(/^\/start$/i, (msg) => {
 
 bot.on(/^\/help$/i, (msg) => {
 		bot.deleteMessage(msg.chat.id, msg.message_id);
-		msg.reply.text("Use /luck <language>\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /lang to display supportat languages\nUse /botinfo to see version, last changes")
+		msg.reply.text("Use /luck <language>\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /lang to display supportat languages\nUse /botinfo to see version, last changes\n Use /uptime to see for how long the bot is running")
 });
 
 bot.on(/^\/lang$/i, (msg) => {
@@ -128,7 +130,12 @@ bot.on(/^\/luck( .+)*$/i, (msg, props) => {
 		}
 });
 
+bot.on(/^\/uptime$/i, (msg) => {
+		bot.deleteMessage(msg.chat.id, msg.message_id);
+		msg.reply.text("Uptime: " + f.uptime(Time_started))
+});
 
+//Inline Request Handler
 bot.on('inlineQuery', msg => {
 
     let query = msg.query;
@@ -136,7 +143,7 @@ bot.on('inlineQuery', msg => {
 	var zufall = zufallnumber.toString();
 
     // Create a new answer list object
-    const answers = bot.answerList(msg.id, {cacheTime: 60});
+    const answers = bot.answerList(msg.id, {cacheTime: 1});
 
     // Article
     answers.addArticle({
@@ -155,4 +162,7 @@ bot.on('inlineQuery', msg => {
     return bot.answerQuery(answers);
 
 });
+
+
+
 

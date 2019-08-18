@@ -1,10 +1,10 @@
 {
     "botname":"Glueckskeks_Bot",
 	"fortuneCookies":"8",
-	"botversion":"1.1",
+	"botversion":"1.2",
 	"isSuperAdmin":"206921999",
 	"isSuperAdminUsername":"BolverBlitz",
-    	"bottoken":"Telegram Bot Token",
+    "bottoken":"Telegram Bot Token",
 	"WTdelmsgshort":"5400",
 	"WTdelmsglong":"17500"
 }
