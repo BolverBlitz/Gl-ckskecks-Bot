@@ -1,6 +1,6 @@
 {
 	"botinfo": "Botname: {{botname}} \nVersion: {{version}} \n\nLetzte Änderungen: ({{version}}){{changelog_latest}}",
-    "0": "Sie werden in hohe Positionen aufsteigen.",
+	"0": "Sie werden in hohe Positionen aufsteigen.",
 	"1": "Günstige Zeit für Verhandlungen.",
 	"2": "Gelassen bleiben! Sie sind in Topform.",
 	"3": "Auf Ihre Spürnase können Sie sich verlassen.",

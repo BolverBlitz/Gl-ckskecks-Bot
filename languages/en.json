@@ -1,6 +1,6 @@
 {
 	"botinfo": "Botname: {{botname}} \nVersion: {{version}} \n\nLast changes: ({{version}}){{changelog_latest}}",
-    "0": "You are going to be promoted.",
+	"0": "You are going to be promoted.",
 	"1": "The time is good for negotiations.",
 	"2": "Stay clam. You are on top.",
 	"3": "You can rely on your Intuition.",

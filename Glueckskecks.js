@@ -104,7 +104,7 @@ bot.on(/^\/start$/i, (msg) => {
 
 bot.on(/^\/help$/i, (msg) => {
 		bot.deleteMessage(msg.chat.id, msg.message_id);
-		msg.reply.text("Use /luck <language>\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /lang to display supportat languages\nUse /botinfo to see version, last changes\n Use /uptime to see for how long the bot is running")
+		msg.reply.text("Use /luck [language]\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /lang to display supportat languages\nUse /botinfo to see version, last changes\n Use /uptime to see for how long the bot is running\n Use /add [language] [Your cookie saying in the given language]")
 });
 
 bot.on(/^\/lang$/i, (msg) => {
@@ -135,6 +135,40 @@ bot.on(/^\/uptime$/i, (msg) => {
 		msg.reply.text("Uptime: " + f.uptime(Time_started))
 });
 
+bot.on(/^\/add$/i, (msg) => {
+	 msg.reply.text("You must add a fortune cookie saying. Like:\n'/add Stay clam. You are on top.'\n\nLike /add en You can rely on your Intuition.").then(function(msg)
+             {
+                     setTimeout(function(){
+                             bot.deleteMessage(msg.chat.id,msg.message_id);
+                     }, config.WTdelmsglong);
+             });
+             bot.deleteMessage(msg.chat.id, msg.message_id);
+
+     bot.deleteMessage(msg.chat.id, msg.message_id);
+});
+
+bot.on(/^\/add(.+)$/i, (msg, props) => {
+	const Para = props.match[1].split(' ');
+		var lang = Para[1];
+		var MSG = Para[2];
+		const replyMarkup = bot.inlineKeyboard([
+        [
+            bot.inlineButton('Yes', {callback: 'AddYes'}),
+			bot.inlineButton('No', {callback: 'AddNo'})
+        ]
+		]);
+	bot.deleteMessage(msg.chat.id, msg.message_id);
+	if(i18n.languages.includes(lang)){
+		for(var i = 3; i < Para.length;i++){
+			MSG = MSG + " " + Para[i];
+		}
+			msg.reply.text("Your suggestion was send:\n" + MSG + "\n\nLanguage: " + lang)
+			bot.sendMessage(config.suggestionGroup, " New suggestion: \n" + MSG + "\n\nLanguage: " + lang, {replyMarkup});
+	}else{
+		msg.reply.text("Coudn´t send your suggestion:\n" + MSG + "\n\nThe language you provided isn´t in my DB, i´m sorry.\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)", { parseMode: 'markdown' });
+	}
+});
+
 //Inline Request Handler
 bot.on('inlineQuery', msg => {
 
@@ -163,6 +197,73 @@ bot.on('inlineQuery', msg => {
 
 });
 
+//Callback Handler
+bot.on('callbackQuery', (msg) => {
+    console.log('callbackQuery data:', msg.data);
+    bot.answerCallbackQuery(msg.id);
+	var chatId = msg.message.chat.id;
+	var messageId = msg.message.message_id;
+	var editText = msg.message.text.split(' ');
+	var editText2 = msg.message.text.split('\n');
+	var lang = editText[editText.length-1];
+	console.log(lang);
+	
+	var editTextOutput = "";
+	for(var i = 2; i < editText.length;i++){
+		editTextOutput = editTextOutput + " " + editText[i];
+	}
+	
+    if(msg.data=="AddYes")
+    {
+		//bot.deleteMessage(ChatId, MessageId)
+		bot.editMessageText(
+            {chatId: chatId, messageId: messageId}, `<b>I have added:</b> ${ editTextOutput }`,
+            {parseMode: 'html'}
+        ).catch(error => console.log('Error:', error));
+		newline(editText2[1], lang);
+    }
+	if(msg.data=="AddNo")
+    {
+		//bot.deleteMessage(ChatId, MessageId)
+		bot.editMessageText(
+            {chatId: chatId, messageId: messageId}, `<b>I refused:</b> ${ editTextOutput }`,
+            {parseMode: 'html'}
+        ).catch(error => console.log('Error:', error));
+		console.log(editText2[1]);
+		newline(editText2[1], lang);
+    }
+});
 
+function newline(editText, lang) {
+	var file = fs.readFileSync('./languages/' + lang + '.json'); //Read lang.json
+	filearray = file.toString().split('\n');
+	var NextNumberSplitter = filearray[filearray.length-2];
+	NextNumberSplitter = NextNumberSplitter.split('"');
+	var NextNumber = Number(NextNumberSplitter[1]) + 1;
+	//console.log(NextNumber);
+	
+	var addhelper = fs.readFileSync('./addHelper.file'); //Stupid fix for a problem that shouldn't exist in the first place
+	addhelper = addhelper.toString();
+	addhelper = addhelper.replace('NextNumber',NextNumber,);
+	addhelper = addhelper.replace('editText',editText,);
+	//console.log(addhelper);
+	var newfile = [];
+	newfile = newfile.toString();
+	
+	for(var i = 0; i < filearray.length-2;i++){
+		newfile = newfile + filearray[i] + "\n";
+	}
+	newfile = newfile + filearray[filearray.length-2] + ",\n";
+	newfile = newfile + "\t" + addhelper + "\n";
+	newfile = newfile + "}";
 
+	//console.log(newfile);
+	obj = JSON.parse(newfile); //Check ob JSNON File ist richtig formatiert. Wenn hier Crash, dann ist das json beschädigt!
+	//console.log(obj);
+	fs.writeFile('./languages/' + lang + '.json', newfile, (err) => {if (err) console.log(err);
+		console.log("Added " + editText + "to\n./languages/" + lang + ".json");
+	});
+}
 
+	
+	

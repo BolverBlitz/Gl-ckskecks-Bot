@@ -2,5 +2,6 @@
         "1_0":"\nMain bot completed\n- Added 2 new Cookies",
 		"1_0_1":"\n- Added 6 new Cookies",
 		"1_1":"\n- Added inline reply",
-		"1_2":"\n- Added /uptime command\n- Bugfix: Cachetime reduce from 60 to 1"
+		"1_2":"\n- Added /uptime command\n- Bugfix: Cachetime reduce from 60 to 1",
+		"1_3":"\n- Added /add <language> <New Cookie Text> command\n- Bugfix: ./language/files"
 }
