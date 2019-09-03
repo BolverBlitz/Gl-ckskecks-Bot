@@ -1,11 +1,11 @@
 {
-	"botname":"Glueckskeks_Bot",
+    "botname":"Glueckskeks_Bot",
 	"NotFortuneCookieLinesInJsonFile":"1",
-	"botversion":"1.4",
+	"botversion":"1.4.1",
 	"isSuperAdmin":"206921999",
 	"isSuperAdminUsername":"BolverBlitz",
 	"suggestionGroup":"-1001472449625",
-	"bottoken":"YourBotTokan",
+    "bottoken":"YourBotToken",
 	"WTdelmsgshort":"5400",
 	"WTdelmsglong":"17500"
 }

@@ -45,7 +45,8 @@ bot.start(); //Telegram bot start
 //Startup Message
 setTimeout(function(){
 console.log("Bot (" + botname + ") started at " + f.getDateTime(new Date()) + " with version " + version)
-bot.sendMessage(config.isSuperAdmin, "Bot started on Version " + version)
+bot.sendMessage(config.isSuperAdmin, "Bot started on Version " + version + "\nWith " + deMAX + " german and " + enMAX + " english cookies")
+bot.sendMessage(config.suggestionGroup, "Bot started on Version " + version + "\nWith " + deMAX + " german and " + enMAX + " english cookies")
 f.log("Pushed bot start to the admin");
 }, 2000);
 
@@ -125,7 +126,7 @@ bot.on(/^\/luck( .+)*$/i, (msg, props) => {
 			var lang = "de";
 		}else{
 			Para = Para.replace(/\s/g, '');
-			var lang = Para;
+			var lang = Para.toLowerCase();
 		}
 		if(i18n.languages.includes(lang)){
 		if(lang == 'de'){ var zufallnumber = f.getRandomInt(deMAX);}
@@ -267,7 +268,7 @@ function newline(editText, lang) {
 	obj = JSON.parse(newfile); //Check ob JSNON File ist richtig formatiert. Wenn hier Crash, dann ist das json beschädigt!
 	//console.log(obj);
 	fs.writeFile('./languages/' + lang + '.json', newfile, (err) => {if (err) console.log(err);
-		console.log("Added " + editText + "to\n./languages/" + lang + ".json");
+		console.log("Added " + editText + " to\n./languages/" + lang + ".json");
 	});
 }
 
