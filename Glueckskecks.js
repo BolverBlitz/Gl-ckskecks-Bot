@@ -33,6 +33,12 @@ let versionfix = version.replace(/[.]/g,'_',);
 var changelog_latest = changelog[versionfix];
 var LastConnectionLost = new Date();
 
+var langde = fs.readFileSync('./languages/de.json');
+var langen = fs.readFileSync('./languages/en.json');
+langde = langde.toString().split('\n');
+langen = langen.toString().split('\n');
+var deMAX = (langde.length - 2) - config.NotFortuneCookieLinesInJsonFile;
+var enMAX = (langen.length - 2) - config.NotFortuneCookieLinesInJsonFile;
 bot.start(); //Telegram bot start
 
 
@@ -104,7 +110,7 @@ bot.on(/^\/start$/i, (msg) => {
 
 bot.on(/^\/help$/i, (msg) => {
 		bot.deleteMessage(msg.chat.id, msg.message_id);
-		msg.reply.text("Use /luck [language]\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /lang to display supportat languages\nUse /botinfo to see version, last changes\n Use /uptime to see for how long the bot is running\n Use /add [language] [Your cookie saying in the given language]")
+		msg.reply.text("Use /luck [language]\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /lang to display supportat languages\nUse /botinfo to see version, last changes\nUse /uptime to see for how long the bot is running\nUse /lang to see all available languages\nUse /add [language] [Your cookie saying in the given language]")
 });
 
 bot.on(/^\/lang$/i, (msg) => {
@@ -122,7 +128,8 @@ bot.on(/^\/luck( .+)*$/i, (msg, props) => {
 			var lang = Para;
 		}
 		if(i18n.languages.includes(lang)){
-			var zufallnumber = f.getRandomInt(config.fortuneCookies);
+		if(lang == 'de'){ var zufallnumber = f.getRandomInt(deMAX);}
+		if(lang == 'en'){ var zufallnumber = f.getRandomInt(enMAX);}
 			var zufall = zufallnumber.toString();
 			msg.reply.text(i18n(lang, zufall));
 		}else{
@@ -149,7 +156,7 @@ bot.on(/^\/add$/i, (msg) => {
 
 bot.on(/^\/add(.+)$/i, (msg, props) => {
 	const Para = props.match[1].split(' ');
-		var lang = Para[1];
+		var lang = Para[1].toLowerCase();
 		var MSG = Para[2];
 		const replyMarkup = bot.inlineKeyboard([
         [
@@ -173,9 +180,9 @@ bot.on(/^\/add(.+)$/i, (msg, props) => {
 bot.on('inlineQuery', msg => {
 
     let query = msg.query;
-	var zufallnumber = f.getRandomInt(config.fortuneCookies);
-	var zufall = zufallnumber.toString();
-
+	//var zufall = zufallnumber.toString();
+	var zufallDE = f.getRandomInt(deMAX).toString();
+	var zufallEN = f.getRandomInt(enMAX).toString();
     // Create a new answer list object
     const answers = bot.answerList(msg.id, {cacheTime: 1});
 
@@ -184,14 +191,14 @@ bot.on('inlineQuery', msg => {
         id: 'luckde',
         title: 'Zufälliger Glückskeksspruch',
         description: `Language: German`,
-        message_text: (i18n('de', zufall))
+        message_text: (i18n('de', zufallDE))
     });
 	
 	answers.addArticle({
         id: 'lucken',
         title: 'Random fortune cookie saying',
         description: `Language: English`,
-        message_text: (i18n('en', zufall))
+        message_text: (i18n('en', zufallEN))
     });
     return bot.answerQuery(answers);
 
@@ -199,14 +206,14 @@ bot.on('inlineQuery', msg => {
 
 //Callback Handler
 bot.on('callbackQuery', (msg) => {
-    console.log('callbackQuery data:', msg.data);
+    //console.log('callbackQuery data:', msg.data);
     bot.answerCallbackQuery(msg.id);
 	var chatId = msg.message.chat.id;
 	var messageId = msg.message.message_id;
 	var editText = msg.message.text.split(' ');
 	var editText2 = msg.message.text.split('\n');
 	var lang = editText[editText.length-1];
-	console.log(lang);
+	//console.log(lang);
 	
 	var editTextOutput = "";
 	for(var i = 2; i < editText.length;i++){
@@ -229,8 +236,7 @@ bot.on('callbackQuery', (msg) => {
             {chatId: chatId, messageId: messageId}, `<b>I refused:</b> ${ editTextOutput }`,
             {parseMode: 'html'}
         ).catch(error => console.log('Error:', error));
-		console.log(editText2[1]);
-		newline(editText2[1], lang);
+		console.log("I refused:  " + editText2[1]);
     }
 });
 
