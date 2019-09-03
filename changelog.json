@@ -4,5 +4,5 @@
 		"1_1":"\n- Added: inline reply",
 		"1_2":"\n- Added: /uptime command\n- Bugfix: Cachetime reduce from 60 to 1",
 		"1_3":"\n- Added: /add <language> <New Cookie Text> command\n- Bugfix: ./language/files",
-		"1_4":"\n- Added: /lang in /help output\n- Bugfix: Bot automatically uses new cookies after restart.\n- Bugfix: Dosn´t add rejected cookies anymore.\n- Bugfix: Language is not longer case sensitive"
+		"1_4":"\n- Added: /lang in /help output\n- Bugfix: Bot automatically uses new cookies after restart.\n- Bugfix: Doesn't add rejected cookies anymore.\n- Bugfix: Language is not longer case sensitive"
 }
