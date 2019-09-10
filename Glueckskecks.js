@@ -33,6 +33,8 @@ let versionfix = version.replace(/[.]/g,'_',);
 var changelog_latest = changelog[versionfix];
 var LastConnectionLost = new Date();
 
+var changelogjson = fs.readFileSync('./changelog.json'); //For /changelog
+
 var langde = fs.readFileSync('./languages/de.json');
 var langen = fs.readFileSync('./languages/en.json');
 langde = langde.toString().split('\n');
@@ -74,8 +76,6 @@ bot.on(/^\/botinfo( .+)*$/i, (msg, props) => {
 			var lang = Para;
 		}
 		if(i18n.languages.includes(lang)){
-			var zufallnumber = f.getRandomInt(config.fortuneCookies);
-			var zufall = zufallnumber.toString();
 			msg.reply.text(i18n(lang, 'botinfo', { botname: botname, version: version, changelog_latest: changelog_latest})).then(function(msg)
 					{
                      setTimeout(function(){
@@ -87,13 +87,13 @@ bot.on(/^\/botinfo( .+)*$/i, (msg, props) => {
 		}
 });
 
-bot.on(/^\/start$/i, (msg) => {
+bot.on(/^\/start/i, (msg) => {
 	bot.deleteMessage(msg.chat.id, msg.message_id);
 	if(msg.chat.type != "private")
 	{
 		if(msg.text.split(' ')[0].endsWith(botname))
 		{
-		let startmsg = "This bot will post random fortune cookie lines. Just use /luck";
+		let startmsg = "This bot will post random fortune cookie lines. Just use /luck\n\nIf you want to add another fortune cookie saying use /add (language) (cookie saying)\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)";
 		msg.reply.text(startmsg).then(function(msg)
 	                        {
 	                                setTimeout(function(){
@@ -103,7 +103,7 @@ bot.on(/^\/start$/i, (msg) => {
 		bot.deleteMessage(msg.chat.id, msg.message_id);
 		}
 	}else{
-		let startmsg = "This bot will post random fortune cookie lines. Just use /luck";
+		let startmsg = "This bot will post random fortune cookie lines. Just use /luck\n\nIf you want to add another fortune cookie saying use /add (language) (cookie saying)\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)";
 		msg.reply.text(startmsg);
 		bot.deleteMessage(msg.chat.id, msg.message_id);
 	}
@@ -111,7 +111,7 @@ bot.on(/^\/start$/i, (msg) => {
 
 bot.on(/^\/help$/i, (msg) => {
 		bot.deleteMessage(msg.chat.id, msg.message_id);
-		msg.reply.text("Use /luck [language]\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /lang to display supportat languages\nUse /botinfo to see version, last changes\nUse /uptime to see for how long the bot is running\nUse /lang to see all available languages\nUse /add [language] [Your cookie saying in the given language]")
+		msg.reply.text("Use /luck [language]\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /botinfo to see version, last changes\nUse /uptime to see for how long the bot is running\nUse /lang to see all available languages\nUse /add [language] [Your cookie saying in the given language]")
 });
 
 bot.on(/^\/lang$/i, (msg) => {
@@ -175,6 +175,20 @@ bot.on(/^\/add(.+)$/i, (msg, props) => {
 	}else{
 		msg.reply.text("Coudn´t send your suggestion:\n" + MSG + "\n\nThe language you provided isn´t in my DB, i´m sorry.\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)", { parseMode: 'markdown' });
 	}
+});
+
+bot.on(/^\/changelog$/i, (msg) => {
+	var z = 1;
+	var build = "Changelog:";
+	changelogarr = changelogjson.toString().split('"');
+	for(var i = 0; i < changelogarr.length/4-1;i++){
+		//console.log(changelogarr[z]);
+		build = build + "\nVersion: " + changelogarr[z].replace(/[_]/g,'.',) + changelog[changelogarr[z]] + "\n"
+		//msg.reply.text("Version: " + changelogarr[z] + "\n" + changelog[changelogarr[z]]);
+		var z = z + 4;
+	}
+	console.log(build.length);
+	msg.reply.text(build);
 });
 
 //Inline Request Handler
