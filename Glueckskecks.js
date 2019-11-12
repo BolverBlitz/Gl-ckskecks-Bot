@@ -1,5 +1,6 @@
 //Include needed jsons
 var config = require('./config');
+var bottoken = require('./token');
 var changelog = require('./changelog');
 
 //Include some Funktions
@@ -19,7 +20,7 @@ const i18n = newI18n(__dirname + '/languages', ['en', 'de']);
 //Include complex modules
 const Telebot = require('telebot');
 const bot = new Telebot({
-	token: config.bottoken,
+	token: bottoken.bottoken,
 	limit: 1000,
         usePlugins: ['commandButton']
 });
@@ -94,7 +95,7 @@ bot.on(/^\/start/i, (msg) => {
 		if(msg.text.split(' ')[0].endsWith(botname))
 		{
 		let startmsg = "This bot will post random fortune cookie lines. Just use /luck\n\nIf you want to add another fortune cookie saying use /add (language) (cookie saying)\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)";
-		msg.reply.text(startmsg).then(function(msg)
+		msg.reply.text(startmsg, { parseMode: 'markdown' }).then(function(msg)
 	                        {
 	                                setTimeout(function(){
 	                                        bot.deleteMessage(msg.chat.id,msg.message_id);
@@ -104,14 +105,14 @@ bot.on(/^\/start/i, (msg) => {
 		}
 	}else{
 		let startmsg = "This bot will post random fortune cookie lines. Just use /luck\n\nIf you want to add another fortune cookie saying use /add (language) (cookie saying)\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)";
-		msg.reply.text(startmsg);
+		msg.reply.text(startmsg, { parseMode: 'markdown' });
 		bot.deleteMessage(msg.chat.id, msg.message_id);
 	}
 });
 
 bot.on(/^\/help$/i, (msg) => {
 		bot.deleteMessage(msg.chat.id, msg.message_id);
-		msg.reply.text("Use /luck [language]\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /botinfo to see version, last changes\nUse /uptime to see for how long the bot is running\nUse /lang to see all available languages\nUse /add [language] [Your cookie saying in the given language]")
+		msg.reply.text("Use /luck [language]\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /botinfo to see version, last changes\nUse /uptime to see for how long the bot is running\nUse /lang to see all available languages\nUse /changelog to see a history of chanches made\nUse /add [language] [Your cookie saying in the given language]")
 });
 
 bot.on(/^\/lang$/i, (msg) => {
