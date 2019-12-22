@@ -8,4 +8,5 @@
 	"1_4_1":"\n- Changed: Admin startup message",
 	"1_4_2":"\n- Added: /changelog",
 	"1_4_3":"\n- Added: /changelog to /help\n- Bugfix: /start is now html markdown\n- Changed: Bottoken was removed in config.json and added to token.json"
+	"1_4_4":"\n- Added: /list to get all cookies that the Bot knows."
 }

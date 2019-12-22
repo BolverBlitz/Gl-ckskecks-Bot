@@ -48,7 +48,7 @@ bot.start(); //Telegram bot start
 //Startup Message
 setTimeout(function(){
 console.log("Bot (" + botname + ") started at " + f.getDateTime(new Date()) + " with version " + version)
-bot.sendMessage(config.isSuperAdmin, "Bot started on Version " + version + "\nWith " + deMAX + " german and " + enMAX + " english cookies")
+bot.sendMessage(config.LogChat, "Bot started on Version " + version + "\nWith " + deMAX + " german and " + enMAX + " english cookies")
 bot.sendMessage(config.suggestionGroup, "Bot started on Version " + version + "\nWith " + deMAX + " german and " + enMAX + " english cookies")
 f.log("Pushed bot start to the admin");
 }, 2000);
@@ -62,12 +62,13 @@ bot.on('reconnecting', (reconnecting) => {
 bot.on('reconnected', (reconnected) => {
 	f.log(util.inspect(reconnected, true, 99));
 	f.log("connection successfully");
-	bot.sendMessage(config.isSuperAdmin, "Bot is back online. Lost connection at " + f.getDateTime(LastConnectionLost))
+	bot.sendMessage(config.LogChat, "Bot is back online. Lost connection at " + f.getDateTime(LastConnectionLost))
 });
 
 //Userimput
 //Basics
 bot.on(/^\/botinfo( .+)*$/i, (msg, props) => {
+		var LastConnectionLost = new Date();
 		bot.deleteMessage(msg.chat.id, msg.message_id);
         var Para = props.match[1]
 		if (props.match[1] === undefined){
@@ -89,6 +90,7 @@ bot.on(/^\/botinfo( .+)*$/i, (msg, props) => {
 });
 
 bot.on(/^\/start/i, (msg) => {
+	var LastConnectionLost = new Date();
 	bot.deleteMessage(msg.chat.id, msg.message_id);
 	if(msg.chat.type != "private")
 	{
@@ -111,16 +113,19 @@ bot.on(/^\/start/i, (msg) => {
 });
 
 bot.on(/^\/help$/i, (msg) => {
+		var LastConnectionLost = new Date();
 		bot.deleteMessage(msg.chat.id, msg.message_id);
 		msg.reply.text("Use /luck [language]\nexample: \n/luck --> Will give german output\n /luck en --> Will give english output\n\nUse /botinfo to see version, last changes\nUse /uptime to see for how long the bot is running\nUse /lang to see all available languages\nUse /changelog to see a history of chanches made\nUse /add [language] [Your cookie saying in the given language]")
 });
 
 bot.on(/^\/lang$/i, (msg) => {
+		var LastConnectionLost = new Date();
 		bot.deleteMessage(msg.chat.id, msg.message_id);
 		msg.reply.text("Supported languages are : \n" + i18n.languages)
 });
 
 bot.on(/^\/luck( .+)*$/i, (msg, props) => {
+		var LastConnectionLost = new Date();
 		bot.deleteMessage(msg.chat.id, msg.message_id);
         var Para = props.match[1]
 		if (props.match[1] === undefined){
@@ -140,11 +145,13 @@ bot.on(/^\/luck( .+)*$/i, (msg, props) => {
 });
 
 bot.on(/^\/uptime$/i, (msg) => {
+		var LastConnectionLost = new Date();
 		bot.deleteMessage(msg.chat.id, msg.message_id);
 		msg.reply.text("Uptime: " + f.uptime(Time_started))
 });
 
 bot.on(/^\/add$/i, (msg) => {
+	var LastConnectionLost = new Date();
 	 msg.reply.text("You must add a fortune cookie saying. Like:\n'/add Stay clam. You are on top.'\n\nLike /add en You can rely on your Intuition.").then(function(msg)
              {
                      setTimeout(function(){
@@ -157,6 +164,7 @@ bot.on(/^\/add$/i, (msg) => {
 });
 
 bot.on(/^\/add(.+)$/i, (msg, props) => {
+	var LastConnectionLost = new Date();
 	const Para = props.match[1].split(' ');
 		var lang = Para[1].toLowerCase();
 		var MSG = Para[2];
@@ -179,6 +187,7 @@ bot.on(/^\/add(.+)$/i, (msg, props) => {
 });
 
 bot.on(/^\/changelog$/i, (msg) => {
+	var LastConnectionLost = new Date();
 	var z = 1;
 	var build = "Changelog:";
 	changelogarr = changelogjson.toString().split('"');
@@ -192,8 +201,42 @@ bot.on(/^\/changelog$/i, (msg) => {
 	msg.reply.text(build);
 });
 
+bot.on(/^\/list$/i, (msg) => {
+	var Output = new Array()
+	var message = 'DE:\n\n'
+	for(i = 0; i < deMAX; i++){
+		var temp = i18n('de', i.toString())
+		if(message.length + temp.length <= 4000){
+			message = message + i + ': ' + temp + '\n'
+		}else{
+			Output.push(message)
+			var x = i-1
+			var message = i + ': ' + i18n('de', i.toString()) + '\n'
+		}
+	}
+	Output.push(message)
+	var message = 'EN:\n'
+	for(i = 0; i < deMAX; i++){
+		var temp = i18n('en', i.toString())
+		if(message.length + temp.length <= 300){
+			message = message + i + ': ' + temp + '\n'
+		}else{
+			Output.push(message)
+			var x = i-1
+			var message = i + ': ' + i18n('en', i.toString()) + '\n'
+		}
+	}
+	Output.push(message)
+	let promise = Promise.resolve();
+    Output.map((message) => {
+      promise = promise.then(() => bot.sendMessage(msg.chat.id, message));
+    });
+    return promise;
+});
+
 //Inline Request Handler
 bot.on('inlineQuery', msg => {
+	var LastConnectionLost = new Date();
 
     let query = msg.query;
 	//var zufall = zufallnumber.toString();
@@ -222,6 +265,7 @@ bot.on('inlineQuery', msg => {
 
 //Callback Handler
 bot.on('callbackQuery', (msg) => {
+	var LastConnectionLost = new Date();
     //console.log('callbackQuery data:', msg.data);
     bot.answerCallbackQuery(msg.id);
 	var chatId = msg.message.chat.id;
