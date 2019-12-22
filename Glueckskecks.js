@@ -203,7 +203,7 @@ bot.on(/^\/changelog$/i, (msg) => {
 
 bot.on(/^\/list$/i, (msg) => {
 	var Output = new Array()
-	var message = 'DE:\n\n'
+	var message = 'DE:\n'
 	for(i = 0; i < deMAX; i++){
 		var temp = i18n('de', i.toString())
 		if(message.length + temp.length <= 4000){
@@ -218,7 +218,7 @@ bot.on(/^\/list$/i, (msg) => {
 	var message = 'EN:\n'
 	for(i = 0; i < deMAX; i++){
 		var temp = i18n('en', i.toString())
-		if(message.length + temp.length <= 300){
+		if(message.length + temp.length <= 4000){
 			message = message + i + ': ' + temp + '\n'
 		}else{
 			Output.push(message)
