@@ -34,10 +34,10 @@ let versionfix = version.replace(/[.]/g,'_',);
 var changelog_latest = changelog[versionfix];
 var LastConnectionLost = new Date();
 
-var changelogjson = fs.readFileSync('./changelog.json'); //For /changelog
+var changelogjson = fs.readFileSync(__dirname + '/changelog.json'); //For /changelog
 
-var langde = fs.readFileSync('./languages/de.json');
-var langen = fs.readFileSync('./languages/en.json');
+var langde = fs.readFileSync(__dirname + '/languages/de.json');
+var langen = fs.readFileSync(__dirname + '/languages/en.json');
 langde = langde.toString().split('\n');
 langen = langen.toString().split('\n');
 var deMAX = (langde.length - 2) - config.NotFortuneCookieLinesInJsonFile;
@@ -46,12 +46,14 @@ bot.start(); //Telegram bot start
 
 
 //Startup Message
+/*
 setTimeout(function(){
 console.log("Bot (" + botname + ") started at " + f.getDateTime(new Date()) + " with version " + version)
 bot.sendMessage(config.LogChat, "Bot started on Version " + version + "\nWith " + deMAX + " german and " + enMAX + " english cookies")
 bot.sendMessage(config.suggestionGroup, "Bot started on Version " + version + "\nWith " + deMAX + " german and " + enMAX + " english cookies")
 f.log("Pushed bot start to the admin");
 }, 2000);
+*/
 
 //Telegram Errors
 bot.on('reconnecting', (reconnecting) => {
@@ -90,25 +92,27 @@ bot.on(/^\/botinfo( .+)*$/i, (msg, props) => {
 });
 
 bot.on(/^\/start/i, (msg) => {
-	var LastConnectionLost = new Date();
-	bot.deleteMessage(msg.chat.id, msg.message_id);
-	if(msg.chat.type != "private")
-	{
-		if(msg.text.split(' ')[0].endsWith(botname))
+	if (msg.text.split(' ')[0].endsWith(botname) || msg.text.split(' ')[0].endsWith('/start')) {
+		var LastConnectionLost = new Date();
+		bot.deleteMessage(msg.chat.id, msg.message_id);
+		if(msg.chat.type != "private")
 		{
-		let startmsg = "This bot will post random fortune cookie lines. Just use /luck\n\nIf you want to add another fortune cookie saying use /add (language) (cookie saying)\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)";
-		msg.reply.text(startmsg, { parseMode: 'markdown' }).then(function(msg)
-	                        {
-	                                setTimeout(function(){
-	                                        bot.deleteMessage(msg.chat.id,msg.message_id);
-	                                }, config.WTdelmsglong);
-	                        });
-		bot.deleteMessage(msg.chat.id, msg.message_id);
+			if(msg.text.split(' ')[0].endsWith(botname))
+			{
+			let startmsg = "This bot will post random fortune cookie lines. Just use /luck\n\nIf you want to add another fortune cookie saying use /add (language) (cookie saying)\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)";
+			msg.reply.text(startmsg, { parseMode: 'markdown' }).then(function(msg)
+								{
+										setTimeout(function(){
+												bot.deleteMessage(msg.chat.id,msg.message_id);
+										}, config.WTdelmsglong);
+								});
+			bot.deleteMessage(msg.chat.id, msg.message_id);
+			}
+		}else{
+			let startmsg = "This bot will post random fortune cookie lines. Just use /luck\n\nIf you want to add another fortune cookie saying use /add (language) (cookie saying)\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)";
+			msg.reply.text(startmsg, { parseMode: 'markdown' });
+			bot.deleteMessage(msg.chat.id, msg.message_id);
 		}
-	}else{
-		let startmsg = "This bot will post random fortune cookie lines. Just use /luck\n\nIf you want to add another fortune cookie saying use /add (language) (cookie saying)\nIf you want to add a new language you can do so [HERE](https://github.com/BolverBlitz/Glueckskecks-Bot)";
-		msg.reply.text(startmsg, { parseMode: 'markdown' });
-		bot.deleteMessage(msg.chat.id, msg.message_id);
 	}
 });
 
